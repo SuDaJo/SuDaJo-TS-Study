@@ -77,7 +77,7 @@ const 개발짱: FE = {
 
 type Name = string;
 type Age = number;
-type Person = Name | Age;
+// type Person = Name | Age;
 
 type PositionX = { x: number };
 type PositionY = { y: number };

@@ -67,23 +67,21 @@ function 함수(x) {
 // new User('ming');
 // // {familyName : 'Jo', name : mingJo} 생성
 // 해당 class 밖에서 private 값을 수정할 일이 생긴다면?
-var User = /** @class */ (function () {
-    function User(a) {
-        this.familyName = 'Jo';
-        this.name = a + this.familyName;
-    }
-    User.prototype.changeFamilyName = function () {
-        this.familyName = 'Lee';
-    };
-    return User;
-}());
-var user = new User('ming');
-user.changeFamilyName();
+// class User {
+//   name :string;
+//   private familyName :string = 'Jo';
+//   constructor(a) {
+//     this.name = a + this.familyName;
+//   }
+//   changeFamilyName() {
+//     this.familyName = 'Lee';
+//   }
+// }
+// let user = new User('ming');
+// user.changeFamilyName();
 // public 잘 쓰면 constructor 생략 가능
-var Person = /** @class */ (function () {
-    function Person(name) {
-        this.name = name;
-    }
-    return Person;
-}());
-new Person();
+// class Person {
+//   constructor(public name) {
+//   }
+// }
+// new Person()

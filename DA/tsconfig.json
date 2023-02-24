@@ -3,5 +3,7 @@
       "target": "es6",
       "module": "commonjs",
       "strictNullChecks": true,
+      // "declaration": true  => ts 파일마다 d.ts 자동생성
+      // "typeRoots": ["./types"] => 해당 폴더에 있는 타입들은 글로번하게 이용 가능 /types/common/ 폴더 생성
   }
 }

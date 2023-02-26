@@ -58,3 +58,41 @@ declare global {
   type Dog = string;
 } 
 ```
+
+## d.ts 파일 이용하기
+- 타입 정의된 내용(`type`, `interface`...)만 저장할 수 있는 파일형식이다. (definition의 약자인 d)
+- 자바스크립트로 컴파일되지 않는다.
+- d.ts 파일은 자동으로 글로벌 모듈이 되지 않는다. (ambient module❌)
+- 정의해둔 타입은 `export` 해서 사용해야 한다.
+
+  - 한 번에 많은 타입을 export 하고 싶은 경우
+    - `namespace`에 사용
+    - `import * as` 문법 사용
+- 함수의 경우 함수에 { } 중괄호 불가능. 파라미터 & return 타입만 지정가능
+
+
+```typescript
+export type Age = number;
+export type multiply = (x :number ,y :number) => number
+export interface Person { name : string }
+```
+
+주로 어디다 씀?
+1. 타입정의만 따로 저장해놓고 import 해서 사용
+2. 프로젝트에서 사용하는 타입을 쭉 정리해놓을 레퍼런스용으로 사용
+    - tsconfig.json에 `"declaration": true` 옵션 추가
+    - 저장시 자동으로 ts파일마다 d.ts 파일 생성
+
+### export 없이 d.ts 파일을 글로벌 모듈 만들기
+d.ts 파일은 일반 ts 파일과 다르게 import export 없어도 로컬모듈이다.
+- 프로젝트 내에 types/common 폴더 두개 생성
+- tsconfig.json 파일에 `"typeRoots": ["./types"]` 옵션 추가
+- ts 파일 작성할 때 타입이 없으면 자동으로 여기서 타입 찾아서 적용한다.
+- 다만 이걸 쓸 경우 파일명.d.ts 자동생성 기능은 끄는게 좋음
+- d.ts 파일명은 기존 ts 파일명과 안겹치게 작성하는게 좋음
+
+### 유명한 JS 라이브러리들은 대부분 d.ts 파일을 제공 
+npm으로 타입스크립트 타입정의된 버전의 라이브러리 설치 시
+- node_modules/@types 이런 경로에 타입이 설치됨
+- 컴파일러는 자동으로 여기 있는 타입 파일을 참고해서 타입을 가져옴
+- `typeRoots` 옵션이 있을 경우 node_modules/@types 폴더를 추가해야 한다. 아니면 그냥 typeRoots 옵션을 제거

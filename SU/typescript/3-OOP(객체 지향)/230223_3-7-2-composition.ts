@@ -125,6 +125,8 @@
   }
 
   class SweetCaffeLatteMachine extends CoffeeMachine {
+    // 여기서의 문제점은 우유를 내거나 설탕을 만들땐 항상 CheapMilkSteamer와 AutomaticSugarMixer를 사용해야 한다는 것입니다.
+    // 또한 항상 싸구려 우유만 제조할 수 있게 스스로를 제약시키고 있는 것과 같습니다.
     constructor(private beans: number, private milkFother: CheapMilkSteamer, private sugar: AutomaticSugarMixer) {
       super(beans);
     }

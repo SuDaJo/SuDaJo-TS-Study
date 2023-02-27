@@ -1,4 +1,8 @@
 {
+  // 이전의 코드들은 class들끼리 밀접하게 연관이 되어있어서 우유 거품제조기를 바꾸고자하면
+  // 모든 class에 거품제조기를 갈아끼워야하는 불편함이 있었습니다.
+  // 이번 파일에서는 이를 업그레이드 해보겠습니다.
+
   type CoffeeCup = {
     shots: number;
     hasMilk?: boolean;
@@ -14,13 +18,10 @@
 
     private coffeeBeans: number = 0;
 
-    constructor(coffeeBeans: number) {
+    constructor(coffeeBeans: number, private milk: MilkFrother, private sugar: SugarProvider) {
       this.coffeeBeans = coffeeBeans;
     }
 
-    static makeMachine(coffeeBeans: number): CoffeeMachine {
-      return new CoffeeMachine(coffeeBeans);
-    }
     fillCoffeeBeans(beans: number) {
       if (beans < 0) {
         throw new Error("커피콩의 수는 0보다 커야합니다.");
@@ -54,11 +55,21 @@
     makeCoffee(shots: number): CoffeeCup {
       this.grindBeans(shots);
       this.preheat();
-      return this.extract(shots);
+      const coffee = this.extract(shots);
+      const sugarAdded = this.sugar.addSugar(coffee);
+      return this.milk.makeMilk(sugarAdded);
     }
   }
 
-  class CheapMilkSteamer {
+  interface MilkFrother {
+    makeMilk(cup: CoffeeCup): CoffeeCup;
+  }
+
+  interface SugarProvider {
+    addSugar(cup: CoffeeCup): CoffeeCup;
+  }
+
+  class CheapMilkSteamer implements MilkFrother {
     private steamMilk(): void {
       console.log("우유를 스팀중입니다");
     }
@@ -72,7 +83,35 @@
     }
   }
 
-  class AutomaticSugarMixer {
+  class FancyMilkSteamer implements MilkFrother {
+    private steamMilk(): void {
+      console.log("비싼우유를 스팀중입니다");
+    }
+
+    makeMilk(cup: CoffeeCup): CoffeeCup {
+      this.steamMilk;
+      return {
+        ...cup,
+        hasMilk: true,
+      };
+    }
+  }
+
+  class VeryFancyMilkSteamer implements MilkFrother {
+    private steamMilk(): void {
+      console.log("비싼우유를 스팀중입니다");
+    }
+
+    makeMilk(cup: CoffeeCup): CoffeeCup {
+      this.steamMilk;
+      return {
+        ...cup,
+        hasMilk: true,
+      };
+    }
+  }
+
+  class AutomaticSugarMixer implements SugarProvider {
     private getSugar() {
       console.log("설탕을 가져오고 있습니다");
       return true;
@@ -87,41 +126,34 @@
     }
   }
 
-  class CaffeLatteMachine extends CoffeeMachine {
-    constructor(private beans: number, public readonly serialNumber: string, private milkFother: CheapMilkSteamer) {
-      super(beans);
+  class SuperSugarMixer implements SugarProvider {
+    private getSugar() {
+      console.log("비싼 설탕");
+      return true;
     }
 
-    makeCoffee(shots: number): CoffeeCup {
-      const coffee = super.makeCoffee(shots);
-      return this.milkFother.makeMilk(coffee);
+    addSugar(cup: CoffeeCup): CoffeeCup {
+      const sugar = this.getSugar();
+      return {
+        ...cup,
+        hasSugar: sugar,
+      };
     }
   }
 
-  class SweetCoffeeMaker extends CoffeeMachine {
-    constructor(private beans: number, private sugarFother: AutomaticSugarMixer) {
-      super(beans);
-    }
-    makeCoffee(shots: number): CoffeeCup {
-      const coffee = super.makeCoffee(shots);
-      return this.sugarFother.addSugar(coffee);
-    }
-  }
-
-  class SweetCaffeLatteMachine extends CoffeeMachine {
-    constructor(private beans: number, private milkFother: CheapMilkSteamer, private sugar: AutomaticSugarMixer) {
-      super(beans);
-    }
-    makeCoffee(shots: number): CoffeeCup {
-      const coffee = super.makeCoffee(shots);
-      const sugarAdded = this.sugar.addSugar(coffee);
-      return this.milkFother.makeMilk(sugarAdded);
-    }
-  }
-
+  // Milk
   const cheapMilkMaker = new CheapMilkSteamer();
+  const fancyMilkMaker = new FancyMilkSteamer();
+  const veryFancyMilkSteamer = new VeryFancyMilkSteamer();
+
   const sugarMaker = new AutomaticSugarMixer();
-  const sweetMachine = new SweetCoffeeMaker(12, sugarMaker);
-  const latteMahcine = new CaffeLatteMachine(12, "sse11", cheapMilkMaker);
-  // const sweetCaffeLatteMachine = new SweetCaffeLatteMachine(12);
+  const fancySugar = new SuperSugarMixer();
+
+  // Sugar
+  // const sweetSugarMachine = new SweetCoffeeMaker(12, sugarMaker);
+  // const fancySugarMachine = new SweetCoffeeMaker(12, fancySugar);
+
+  // const latteMahcine = new CaffeLatteMachine(12, "sse11", cheapMilkMaker);
+  // const coldLatteMachine = new CaffeLatteMachine(12, "sse11", veryFancyMilkSteamer);
+  // const sweetCaffeLatteMachine = new SweetCaffeLatteMachine(12, cheapMilkMaker, sugarMaker);
 }

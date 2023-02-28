@@ -1,12 +1,4 @@
 # object index signatures
-
-## Mapped Types
-object에 들어올 속성을 한번에 지정하고 싶을 때
-
-`[ 자유작명 in keyof 타입파라미터 ] : 원하는 타입`
-
-object 타입을 입력했을 때 속성명은 그대로지만 다른 타입으로 변환해주는 변환기
-
 - 유연한 타입 지정이 가능하다.
 - 반대로 엄격하게 타입을 체크하지 않아 버그를 잡지 못할 수 있다.
 
@@ -66,4 +58,47 @@ interface Person {
 type PersonKeys = keyof Person;  // string | number 타입
 let a :PersonKeys = 'age'; // 가능
 let b :PersonKeys = 'ageeee'; // 가능
+```
+
+## Mapped Types
+object에 들어올 속성을 한번에 지정하고 싶을 때
+
+`[ 자유작명 in keyof 타입파라미터 ] : 원하는 타입`
+
+object 타입을 입력했을 때 속성명은 그대로지만 다른 타입으로 변환해주는 변환기
+
+```typescript
+type Car = {
+  color: boolean,
+  model : boolean,
+  price : boolean | number,
+};
+
+type TypeChanger <MyType> = {
+  [key in keyof MyType]: string;  // Mapped Types
+};
+
+type NewType = TypeChanger<Car>;
+
+let obj :NewType = {
+  color: 'red',
+  model : 'kia',
+  price : '300',
+}
+// NewType은 color, model, price 속성을 가지고 있으며 전부 string 타입이 된다.
+```
+⬇ 원하는 타입을 입력하면 그걸로 변환해주는 범용성 좋은 변환기
+```typescript
+type Bus = {
+  color : string,
+  model : boolean,
+  price : number
+}
+
+type TypeChanger <MyType, T> = {
+  [key in keyof MyType]: T;
+};
+
+type NewBus = TypeChanger<Bus, boolean>;
+type NewBus2 = TypeChanger<Bus, string[]>
 ```

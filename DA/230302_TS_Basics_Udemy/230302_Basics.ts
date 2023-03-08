@@ -58,4 +58,30 @@ type PersonAlias = {
   age: number
 }
 
-let personAlias:PersonAlias;
+let personAlias: PersonAlias[];
+
+
+// Function & types
+// 함수를 사용할 때 타입을 지정하는 위치가 따로 있음
+function add(a: number, b: number) {
+  return a + b;
+}
+
+function printOutput(value: any): void { // void는 함수에 반환값이 없다는걸 의미
+  console.log(value);
+}
+
+
+// Generics
+// 함수에 타입 안정성과 유연성을 줌
+// 어떤 타입이든 자유롭게 사용 가능하지만, 특정 타입을 사용해 함수를 실항하고 나면 해당 타입으로 고정되어 동작함
+function insertAtBeginning<T>(array: T[], value: T) {
+  const newArray = [value, ...array];
+  return newArray;
+}
+
+const demoArray = [1, 2, 3];
+const updatedArray = insertAtBeginning(demoArray, -1); // [-1, 1, 2, 3]
+
+// updatedArray[0].split(""); 
+// 제네릭을 사용하지 않았을때 문자열의 메소드인데 any 타입으로 지정했으므로 TS가 인식하지 못한다.
